@@ -165,6 +165,27 @@ body {
     }
 }
 
+.remove{
+    transform: scale(0);
+    transition: all 0.5s;
+}
+
+@keyframes scaleUp{
+    from{
+        transform: scale(0);
+    }to{
+        transform: scale(1);
+    }
+}
+
+@keyframes scaleDown{
+    from{
+        transform: scale(1);
+    }to{
+        transform: scale(0);
+    }
+}
+
 @keyframes border_color{
     0%{
         border-color: red;
