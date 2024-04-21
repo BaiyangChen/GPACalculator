@@ -1,22 +1,20 @@
-// let hero = document.querySelector(".hero");
-// let slider = document.querySelector(".slider");
-// let animation = document.querySelector("section.animation-wrapper");
+let hero = document.querySelector(".hero");
+let slider = document.querySelector(".slider");
+let animation = document.querySelector("section.animation-wrapper");
 
-// const time_line = new TimelineMax();
+const time_line = new TimelineMax();
 
 // //parameter1 指明哪些元素会被动画影响
 // //parameter2 是duration
 // //parameter3 包含动画开始时元素的CSS属性及其值
 // //parameter4 包含动画结束时元素的CSS属性及其值
-// time_line
-// .fromTo(hero, 1 , {height: "0%"}, {height: "100%", ease: Power2.easeInOut})
-// .fromTo(hero, 1.2 , {width: "80%"}, {width: "100%", ease: Power2.easeInOut})
-// .fromTo(slider, 1, {x: "-100%"}, {x: "0%", ease: Power2.easeInOut}, "-=1.2")
-// .fromTo(animation, 0.3, {opacity: 1}, {opacity: 0});
+time_line
+.fromTo(hero, 1 , {height: "0%"}, {height: "100%", ease: Power2.easeInOut})
+.fromTo(hero, 1.2 , {width: "80%"}, {width: "100%", ease: Power2.easeInOut})
+.fromTo(slider, 1, {x: "-100%"}, {x: "0%", ease: Power2.easeInOut}, "-=1.2")
+.fromTo(animation, 0.3, {opacity: 1}, {opacity: 0});
 
-// setTimeout(() => {
-//     animation.style.pointerEvents = "none";
-// }, 2500);
+setTimeout(() => {animation.style.pointerEvents = "none";}, 2500);
 
 //让整个网站的enter都无响应，当按下任意键的时候，keypress是一个事件，浏览器会把这个事件打包然后传递给（e），再用preventDefault函数去控制这个事件的行为
 window.addEventListener("keypress", (e) => {
@@ -299,7 +297,75 @@ function handleSorting(direction){
   if(direction == "descending"){
     objectArray = objectArray.reverse();
   }
-  console.log(objectArray);
+  
+  //display result after sorting
+  let allInputs  = document.querySelector(".all-inputs");
+  allInputs.innerHTML = "";
+
+  for(let i = 0; i < objectArray.length;i++){
+    allInputs.innerHTML += `<form>
+    <div class="grader">
+        <input type="text" placeholder="class category" class = "class-type" list = "opt" value = ${objectArray[i].class_name} /><!--
+        --><input type="text" placeholder="class number" class="class-number" value = ${objectArray[i].class_number} /><!--
+        --><input type="number" placeholder="credits" min="0" max="6" class="class-credit" value = ${objectArray[i].class_credit} /><!--
+        --><select name="select" class="select">
+            <option value=""></option>
+            <option value="A">A</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B">B</option>
+            <option value="B-">B-</option>
+            <option value="C+">C+</option>
+            <option value="C">C</option>
+            <option value="C-">C-</option>
+            <option value="D+">D+</option>
+            <option value="D">D</option>
+            <option value="D-">D-</option>
+        <option value="F">F</option>
+        </select><!--
+        --><button class = "trash-button">
+                <i class="fas fa-trash"></i>
+        </button>
+    </div>
+</form>`;
+
+graders = document.querySelectorAll("div.grader");
+for(let i = 0; i < graders.length; i++){
+  graders[i].children[3].value = objectArray[i].class_grade;
+  }
+  }
+
+  // adding event listener to result that has been sorted
+
+  //select event
+  let allSelects = document.querySelectorAll("select");
+  allSelects.forEach(select=>{
+    changerColor(select);
+    select.addEventListener("change", (e)=>{
+      setGPA();
+      changerColor(e.target);
+    });
+  });
+  //credit event
+  let allCredits = document.querySelectorAll(".class-credit");
+  allCredits.forEach((credit)=>{
+    credit.addEventListener("change", ()=>{
+      setGPA();
+    });
+  });
+
+  //trash button event
+  let allTrash = document.querySelectorAll(".trash-button");
+  allTrash.forEach((trash)=>{
+    trash.addEventListener("click",(e)=>{
+      e.preventDefault();
+      e.target.parentElement.parentElement.style.animation = "scaleDown 0.5s ease forwards";
+      e.target.parentElement.parentElement.addEventListener("animationend", (e)=>{
+        e.target.remove();
+        setGPA();
+      });
+    });
+  });
 }
 
 function merge(a1,a2){
